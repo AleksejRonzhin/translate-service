@@ -1,4 +1,5 @@
 package ru.rsreu.translate.api.translate
 
-class TranslateService {
+interface TranslateService {
+    fun translate(source: String?, target: String, text: String): String
 }

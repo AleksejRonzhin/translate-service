@@ -1,0 +1,7 @@
+yandex_translation_service:
+  url: "https://translate.api.cloud.yandex.net/translate/v2"
+  bearer_token: "t1.9euelZrIjcmXm42Nl8vHnpSOnM6Qmu3rnpWak42WmcyUl5uck8eRzZ7Jns_l8_dbDxln-e8HdSw8_t3z9xs-Fmf57wd1LDz-zef1656VmpyZz5qZzpbJiY7KzcrOzs_J7_0.OSWjbwDHp6dDwkIHWHjX2K13egpblRIgUJQsC09tsaG2hcpR1n30GemWIXGx90o3Iisxgk4qKO-TX10JFpbNAQ"
+  api:
+    translate: "/translate"
+    translate_error: "error"
+    detect: "/detect"
