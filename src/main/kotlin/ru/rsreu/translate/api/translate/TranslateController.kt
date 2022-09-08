@@ -10,10 +10,8 @@ import ru.rsreu.translate.api.translate.dto.TranslateResponse
 class TranslateController(
     val service: TranslateService
 ) {
-
     @PostMapping("/translate")
     fun translate(@RequestBody request: TranslateRequest): TranslateResponse {
-
         val result = service.translate(request.source, request.target, request.text)
         return TranslateResponse(result)
     }

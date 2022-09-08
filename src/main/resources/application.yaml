@@ -5,3 +5,9 @@ yandex_translation_service:
     translate: "/translate"
     translate_error: "error"
     detect: "/detect"
+
+database:
+  translate_requests:
+    queries:
+      get_all: "SELECT * FROM translate_requests"
+      create: "INSERT INTO translate_requests(request_date, source_language_code, target_language_code, input_text, output_text, ip) values (?, ?, ?, ?, ?, ?)"
