@@ -8,6 +8,7 @@ import org.springframework.web.client.postForEntity
 import ru.rsreu.translate.api.translate.TranslateRequestRepository
 import ru.rsreu.translate.api.translate.TranslateService
 import ru.rsreu.translate.api.translate.model.TranslateRequestInfo
+import ru.rsreu.translate.api.translate.model.Translation
 import ru.rsreu.translate.api.translate.yandex.dto.YandexTranslateRequest
 import ru.rsreu.translate.api.translate.yandex.dto.YandexTranslateResponse
 import ru.rsreu.translate.configuration.YandexTranslationServiceConfiguration
@@ -22,25 +23,32 @@ class YandexTranslateService(
     val headers: HttpHeaders,
     val repo: TranslateRequestRepository
 ) : TranslateService {
+    override fun getAll(): List<TranslateRequestInfo> = repo.getAll()
+
     override fun translate(source: String?, target: String, text: String): String {
-        val sourceWords = text.split(" ")
-        val newWords = sourceWords.stream().parallel()
-            .map { word -> translateWord(source, target, word) }
-            .collect(toList())
-        val result = newWords.joinToString(" ")
+        val translations = getTranslations(source, target, text)
+        val translatedText = getTranslationText(translations)
         repo.create(
             TranslateRequestInfo(
                 date = Timestamp.from(Instant.now()),
                 sourceLanguageCode = source,
                 targetLanguageCode = target,
                 inputText = text,
-                outputText = result,
-                ip = "ip"
+                outputText = translatedText,
+                ip = "ip",
+                translations = translations
             )
         )
-        return result
+        return translatedText
     }
 
+    private fun getTranslations(source: String?, target: String, text: String) =
+        text.split(" ").stream().parallel().map { word ->
+            Translation(word = word, translatedWord = translateWord(source, target, word))
+        }.collect(toList())
+
+    private fun getTranslationText(translations: List<Translation>) =
+        translations.joinToString(" ") { it.translatedWord }
 
     private fun translateWord(source: String?, target: String, word: String): String {
         val request = YandexTranslateRequest(source, target, listOf(word))

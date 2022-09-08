@@ -10,4 +10,6 @@ database:
   translate_requests:
     queries:
       get_all: "SELECT * FROM translate_requests"
+      get_translations: "SELECT * FROM translations WHERE request_id = ?"
       create: "INSERT INTO translate_requests(request_date, source_language_code, target_language_code, input_text, output_text, ip) values (?, ?, ?, ?, ?, ?)"
+      create_translation: "INSERT INTO translations(request_id, word, translated_word) values (?, ?, ?)"
