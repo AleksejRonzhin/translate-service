@@ -1,15 +1,32 @@
 yandex_translation_service:
   url: "https://translate.api.cloud.yandex.net/translate/v2"
-  bearer_token: "t1.9euelZrIjcmXm42Nl8vHnpSOnM6Qmu3rnpWak42WmcyUl5uck8eRzZ7Jns_l8_dbDxln-e8HdSw8_t3z9xs-Fmf57wd1LDz-zef1656VmpyZz5qZzpbJiY7KzcrOzs_J7_0.OSWjbwDHp6dDwkIHWHjX2K13egpblRIgUJQsC09tsaG2hcpR1n30GemWIXGx90o3Iisxgk4qKO-TX10JFpbNAQ"
+  bearer_token: "t1.9euelZqckcaQy52bz5HLyZacy4nPzO3rnpWak42WmcyUl5uck8eRzZ7Jns_l8_cnBRJn-e93PXtV_N3z92czD2f573c9e1X8zef1656VmpyZz5qZzpbJiY7KzcrOzs_J7_0.30oNAZM0Y5G48sW3-b4xHSxm74KtTuwEwcGzsCWiBD82Z82gEufealPKd1rT5RsMUyOarw7XeuFHqMU3k0klCQ"
   api:
     translate: "/translate"
     translate_error: "error"
     detect: "/detect"
 
 database:
-  translate_requests:
-    queries:
-      get_all: "SELECT * FROM translate_requests"
-      get_translations: "SELECT * FROM translations WHERE request_id = ?"
-      create: "INSERT INTO translate_requests(request_date, source_language_code, target_language_code, input_text, output_text, ip) values (?, ?, ?, ?, ?, ?)"
-      create_translation: "INSERT INTO translations(request_id, word, translated_word) values (?, ?, ?)"
+  tables:
+    translate_requests:
+      columns:
+        id: "id"
+        date: "request_date"
+        source: "source_language_code"
+        target: "target_language_code"
+        input: "input_text"
+        output: "output_text"
+        ip: "ip"
+    word_translations:
+      columns:
+        id: "id"
+        request_id: "request_id"
+        word: "word"
+        translated_word: "translated_word"
+
+
+  queries:
+    get_all: "SELECT * FROM translate_requests"
+    get_translations: "SELECT * FROM word_translations WHERE request_id = ?"
+    create: "INSERT INTO translate_requests(request_date, source_language_code, target_language_code, input_text, output_text, ip) values (?, ?, ?, ?, ?, ?)"
+    create_translation: "INSERT INTO word_translations(request_id, word, translated_word) values (?, ?, ?)"

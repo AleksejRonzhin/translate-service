@@ -1,5 +1,5 @@
 package ru.rsreu.translate.api.translate.dto
 
-data class TranslateResponse(
+data class TranslateResponseBody(
     val text: String
 )

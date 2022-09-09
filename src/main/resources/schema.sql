@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS translate_requests(
     ip varchar(15)
 );
 
-CREATE TABLE IF NOT EXISTS translations(
+CREATE TABLE IF NOT EXISTS word_translations(
     id identity,
     request_id int not null,
     word varchar,

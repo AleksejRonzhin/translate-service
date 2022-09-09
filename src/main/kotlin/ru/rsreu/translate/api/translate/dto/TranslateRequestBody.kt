@@ -1,6 +1,6 @@
 package ru.rsreu.translate.api.translate.dto
 
-data class TranslateRequest(
+data class TranslateRequestBody(
     val source: String?,
     val target: String,
     val text: String
