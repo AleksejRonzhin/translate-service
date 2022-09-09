@@ -4,31 +4,22 @@ import org.springframework.stereotype.Service
 import ru.rsreu.translate.api.translate.model.TranslateRequest
 import ru.rsreu.translate.api.translate.model.WordTranslation
 import ru.rsreu.translate.api.translate.repository.TranslateRequestRepository
-import java.sql.Timestamp
-import java.time.Instant
 import java.util.stream.Collectors
 
 @Service
 class TranslateRequestService(
-    private val translateService: TranslateService,
-    private val repo: TranslateRequestRepository
+    private val translateService: TranslateService, private val repo: TranslateRequestRepository
 ) {
     fun getRequests() = repo.getAll()
 
-    fun translate(source: String?, target: String, text: String): String {
-        val translations = getWordTranslations(source, target, text)
-        val translatedText = formTranslationText(translations)
-        repo.create(
-            TranslateRequest(
-                date = Timestamp.from(Instant.now()),
-                sourceLanguageCode = source,
-                targetLanguageCode = target,
-                inputText = text,
-                outputText = translatedText,
-                ip = "ip",
-                translations = translations
-            )
+    fun translate(translateRequest: TranslateRequest): String {
+        val translations = getWordTranslations(
+            translateRequest.sourceLanguageCode, translateRequest.targetLanguageCode, translateRequest.inputText
         )
+        val translatedText = formTranslationText(translations)
+        translateRequest.outputText = translatedText
+        translateRequest.translations = translations
+        repo.create(translateRequest)
         return translatedText
     }
 

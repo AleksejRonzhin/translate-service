@@ -14,7 +14,7 @@ import javax.sql.DataSource
 class TranslateRequestRepository(
     private val dataSource: DataSource, private val config: DatabaseConfiguration
 ) {
-    fun create(requestInfo: TranslateRequest) {
+    fun create(translateRequest: TranslateRequest) {
         val connection = dataSource.connection
         connection.use {
             connection.executeInTransaction {
@@ -22,14 +22,14 @@ class TranslateRequestRepository(
                     config.createRequestQuery, Statement.RETURN_GENERATED_KEYS
                 )
                 preparedStatement.use {
-                    preparedStatement.setTranslateRequestInfo(requestInfo)
+                    preparedStatement.setTranslateRequestInfo(translateRequest)
                     preparedStatement.execute()
                     val resultSet = it.generatedKeys
                     val id = resultSet.use {
                         resultSet.next()
                         resultSet.getLong(1)
                     }
-                    createTranslations(id, requestInfo.translations)
+                    translateRequest.translations?.let { translations -> createTranslations(id, translations) }
                 }
             }
         }
@@ -51,7 +51,7 @@ class TranslateRequestRepository(
         }
     }
 
-    private fun PreparedStatement.setTranslateRequestInfo(requestInfo: TranslateRequest) = requestInfo.let {
+    private fun PreparedStatement.setTranslateRequestInfo(translateRequest: TranslateRequest) = translateRequest.let {
         setTimestamp(1, it.date)
         setString(2, it.sourceLanguageCode)
         setString(3, it.targetLanguageCode)
