@@ -1,8 +1,9 @@
-package ru.rsreu.translate.api.translate
+package ru.rsreu.translate.api.translate.service
 
 import org.springframework.stereotype.Service
 import ru.rsreu.translate.api.translate.model.TranslateRequest
 import ru.rsreu.translate.api.translate.model.WordTranslation
+import ru.rsreu.translate.api.translate.repository.TranslateRequestRepository
 import java.sql.Timestamp
 import java.time.Instant
 import java.util.stream.Collectors
@@ -31,7 +32,6 @@ class TranslateRequestService(
         return translatedText
     }
 
-    // TODO Не просто split, пустые строки надо скипать
     private fun getWordTranslations(source: String?, target: String, text: String) =
         text.split(" ").stream().parallel().map { word ->
             WordTranslation(word = word, translatedWord = translateWord(source, target, word))

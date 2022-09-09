@@ -1,4 +1,4 @@
-package ru.rsreu.translate.api.translate
+package ru.rsreu.translate.api.translate.repository
 
 import org.springframework.stereotype.Repository
 import ru.rsreu.translate.api.translate.model.TranslateRequest

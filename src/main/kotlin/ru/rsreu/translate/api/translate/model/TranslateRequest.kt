@@ -12,4 +12,10 @@ data class TranslateRequest(
     val outputText: String,
     val ip: String,
     val translations: List<WordTranslation>
-)
+){
+    companion object Builder {
+        var date: Timestamp? = null
+
+        fun date(value: Timestamp) = run { date = value }
+    }
+}
