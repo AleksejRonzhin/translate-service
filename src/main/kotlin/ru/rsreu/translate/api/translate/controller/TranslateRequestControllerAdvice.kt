@@ -11,8 +11,8 @@ import ru.rsreu.translate.api.translate.yandex.exception.YandexServiceException
 class TranslateRequestControllerAdvice {
     @ExceptionHandler(YandexServiceException::class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    fun handleYandexServiceNotAvailableException(): ResponseEntity<ErrorResponseBody> =
-        ResponseEntity(ErrorResponseBody("Ошибка яндекса"), HttpStatus.INTERNAL_SERVER_ERROR)
+    fun handleYandexServiceException(): ResponseEntity<ErrorResponseBody> =
+        ResponseEntity(ErrorResponseBody("Yandex API exception"), HttpStatus.INTERNAL_SERVER_ERROR)
 }
 
 data class ErrorResponseBody(

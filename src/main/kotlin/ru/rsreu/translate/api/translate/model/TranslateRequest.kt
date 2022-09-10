@@ -9,6 +9,6 @@ data class TranslateRequest(
     val sourceLanguageCode: String?,
     val targetLanguageCode: String,
     val inputText: String,
-    var outputText: String? = null,
-    var translations: List<WordTranslation>? = null
+    var outputText: String,
+    var translations: List<WordTranslation>
 )

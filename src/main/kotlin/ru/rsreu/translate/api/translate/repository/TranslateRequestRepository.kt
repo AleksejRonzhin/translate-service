@@ -4,7 +4,6 @@ import org.springframework.stereotype.Repository
 import ru.rsreu.translate.api.translate.model.TranslateRequest
 import ru.rsreu.translate.api.translate.model.WordTranslation
 import ru.rsreu.translate.configuration.DatabaseConfiguration
-import java.sql.Connection
 import java.sql.PreparedStatement
 import java.sql.ResultSet
 import java.sql.Statement
@@ -22,14 +21,14 @@ class TranslateRequestRepository(
                     config.createRequestQuery, Statement.RETURN_GENERATED_KEYS
                 )
                 preparedStatement.use {
-                    preparedStatement.setTranslateRequestInfo(translateRequest)
+                    preparedStatement.setTranslateRequest(translateRequest)
                     preparedStatement.execute()
                     val resultSet = it.generatedKeys
                     val id = resultSet.use {
                         resultSet.next()
                         resultSet.getLong(1)
                     }
-                    translateRequest.translations?.let { translations -> createTranslations(id, translations) }
+                    createTranslations(id, translateRequest.translations)
                 }
             }
         }
@@ -51,7 +50,7 @@ class TranslateRequestRepository(
         }
     }
 
-    private fun PreparedStatement.setTranslateRequestInfo(translateRequest: TranslateRequest) = translateRequest.let {
+    private fun PreparedStatement.setTranslateRequest(translateRequest: TranslateRequest) = translateRequest.let {
         setTimestamp(1, it.date)
         setString(2, it.sourceLanguageCode)
         setString(3, it.targetLanguageCode)
@@ -60,7 +59,20 @@ class TranslateRequestRepository(
         setString(6, it.ip)
     }
 
-    private fun convertResultSetToRequestInfo(resultSet: ResultSet): TranslateRequest = with(resultSet) {
+    fun getAll(): List<TranslateRequest> {
+        val connection = dataSource.connection
+        return connection.use {
+            val statement = connection.createStatement()
+            statement.use {
+                val resultSet = statement.executeQuery(config.getAllRequestsQuery)
+                resultSet.use {
+                    resultSet.convert(::convertResultSetToTranslateRequest)
+                }
+            }
+        }
+    }
+
+    private fun convertResultSetToTranslateRequest(resultSet: ResultSet): TranslateRequest = with(resultSet) {
         val columns = config.translateRequestTableColumns
         val id = getLong(columns.id)
         return TranslateRequest(
@@ -73,19 +85,6 @@ class TranslateRequestRepository(
             ip = getString(columns.ip),
             translations = getTranslations(id)
         )
-    }
-
-    fun getAll(): List<TranslateRequest> {
-        val connection = dataSource.connection
-        return connection.use {
-            val statement = connection.createStatement()
-            statement.use {
-                val resultSet = statement.executeQuery(config.getAllRequestsQuery)
-                resultSet.use {
-                    resultSet.convert(::convertResultSetToRequestInfo)
-                }
-            }
-        }
     }
 
     private fun getTranslations(requestId: Long): MutableList<WordTranslation> {
@@ -108,26 +107,4 @@ class TranslateRequestRepository(
             id = getLong(columns.id), word = getString(columns.word), translatedWord = getString(columns.translatedWord)
         )
     }
-}
-
-fun <T> Connection.executeInTransaction(lambda: () -> T): T {
-    autoCommit = false
-    return runCatching {
-        val result = lambda()
-        commit()
-        result
-    }.onFailure {
-        run {
-            rollback()
-            throw it
-        }
-    }.getOrThrow()
-}
-
-fun <T> ResultSet.convert(converter: (ResultSet) -> T): MutableList<T> {
-    val result = mutableListOf<T>()
-    while (next()) {
-        result.add(converter(this))
-    }
-    return result
 }

@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.*
 import ru.rsreu.translate.api.translate.dto.GetTranslateRequestsResponseBody
 import ru.rsreu.translate.api.translate.dto.TranslateRequestBody
 import ru.rsreu.translate.api.translate.dto.TranslateResponseBody
-import ru.rsreu.translate.api.translate.model.TranslateRequest
 import ru.rsreu.translate.api.translate.service.TranslateRequestService
 import java.sql.Timestamp
 import java.time.Instant
@@ -23,16 +22,13 @@ class TranslateRequestController(
     fun translate(
         @RequestBody requestBody: TranslateRequestBody, request: HttpServletRequest
     ): ResponseEntity<TranslateResponseBody> {
-
-        val translateRequest = TranslateRequest(
-            ip = request.remoteAddr,
-            date = Timestamp.from(Instant.now()),
+        val translateRequest = service.create(
             sourceLanguageCode = requestBody.source,
             targetLanguageCode = requestBody.target,
-            inputText = requestBody.text
+            text = requestBody.text,
+            date = Timestamp.from(Instant.now()),
+            ip = request.remoteAddr
         )
-
-        val translatedText = service.translate(translateRequest)
-        return ResponseEntity.ok(TranslateResponseBody(translatedText))
+        return ResponseEntity.ok(TranslateResponseBody(translateRequest.outputText))
     }
 }

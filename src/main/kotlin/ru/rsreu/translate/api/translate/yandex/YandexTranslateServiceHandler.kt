@@ -11,9 +11,5 @@ class YandexTranslateServiceHandler : ResponseErrorHandler {
     override fun hasError(response: ClientHttpResponse) =
         with(response.statusCode.series()) { this == HttpStatus.Series.CLIENT_ERROR || this == HttpStatus.Series.SERVER_ERROR }
 
-    override fun handleError(response: ClientHttpResponse) {
-        println(response.statusCode)
-        // TODO
-        throw YandexServiceException()
-    }
+    override fun handleError(response: ClientHttpResponse) = throw YandexServiceException()
 }

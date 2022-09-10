@@ -10,14 +10,14 @@ import ru.rsreu.translate.api.translate.yandex.YandexTranslateServiceHandler
 @Configuration
 data class YandexTranslateServiceConfiguration(
     @Value("\${yandex_translation_service.url}") val url: String,
-    @Value("\${yandex_translation_service.bearer_token}") val bearerToken: String,
+    @Value("\${yandex_translation_service.api_key}") val apiKey: String,
     @Value("\${yandex_translation_service.api.translate}") val translateUrlPart: String,
     @Value("\${yandex_translation_service.api.translate_error}") val translateErrorText: String,
     @Value("\${yandex_translation_service.api.detect}") val detect: String,
     private val restTemplateBuilder: RestTemplateBuilder,
     private val restTemplateHandler: YandexTranslateServiceHandler
 ) {
-    fun headers() = HttpHeaders().apply { setBearerAuth(bearerToken) }
+    fun headers() = HttpHeaders().apply { add("Authorization", "Api-Key $apiKey") }
 
     fun restTemplate(): RestTemplate = restTemplateBuilder.errorHandler(restTemplateHandler).build()
 }

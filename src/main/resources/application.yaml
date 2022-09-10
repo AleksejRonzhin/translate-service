@@ -1,6 +1,6 @@
 yandex_translation_service:
   url: "https://translate.api.cloud.yandex.net/translate/v2"
-  bearer_token: "t1.9euelZqckcaQy52bz5HLyZacy4nPzO3rnpWak42WmcyUl5uck8eRzZ7Jns_l8_cnBRJn-e93PXtV_N3z92czD2f573c9e1X8zef1656VmpyZz5qZzpbJiY7KzcrOzs_J7_0.30oNAZM0Y5G48sW3-b4xHSxm74KtTuwEwcGzsCWiBD82Z82gEufealPKd1rT5RsMUyOarw7XeuFHqMU3k0klCQ"
+  api_key: "AQVNxX9MGQ2ocw-S65HitpkoXUqrYejglBYvZ_LB"
   api:
     translate: "/translate"
     translate_error: "error"
