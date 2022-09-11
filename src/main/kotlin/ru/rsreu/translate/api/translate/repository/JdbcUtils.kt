@@ -17,7 +17,7 @@ fun <T> Connection.executeInTransaction(lambda: () -> T): T {
     }.getOrThrow()
 }
 
-fun <T> ResultSet.convert(converter: (ResultSet) -> T): MutableList<T> {
+fun <T> ResultSet.convert(converter: (ResultSet) -> T): Collection<T> {
     val result = mutableListOf<T>()
     while (next()) {
         result.add(converter(this))

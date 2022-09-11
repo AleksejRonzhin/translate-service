@@ -4,7 +4,6 @@ yandex_translation_service:
   api:
     translate: "/translate"
     translate_error: "error"
-    detect: "/detect"
 
 database:
   tables:

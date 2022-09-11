@@ -13,7 +13,6 @@ data class YandexTranslateServiceConfiguration(
     @Value("\${yandex_translation_service.api_key}") val apiKey: String,
     @Value("\${yandex_translation_service.api.translate}") val translateUrlPart: String,
     @Value("\${yandex_translation_service.api.translate_error}") val translateErrorText: String,
-    @Value("\${yandex_translation_service.api.detect}") val detect: String,
     private val restTemplateBuilder: RestTemplateBuilder,
     private val restTemplateHandler: YandexTranslateServiceHandler
 ) {

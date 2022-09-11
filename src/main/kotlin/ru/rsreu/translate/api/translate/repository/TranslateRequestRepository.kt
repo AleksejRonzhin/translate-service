@@ -34,7 +34,7 @@ class TranslateRequestRepository(
         }
     }
 
-    private fun createTranslations(id: Long, translations: List<WordTranslation>) {
+    private fun createTranslations(id: Long, translations: Collection<WordTranslation>) {
         val connection = dataSource.connection
         connection.use {
             val preparedStatement = connection.prepareStatement(config.createTranslationQuery)
@@ -59,7 +59,7 @@ class TranslateRequestRepository(
         setString(6, it.ip)
     }
 
-    fun getAll(): List<TranslateRequest> {
+    fun getAll(): Collection<TranslateRequest> {
         val connection = dataSource.connection
         return connection.use {
             val statement = connection.createStatement()
@@ -87,7 +87,7 @@ class TranslateRequestRepository(
         )
     }
 
-    private fun getTranslations(requestId: Long): MutableList<WordTranslation> {
+    private fun getTranslations(requestId: Long): Collection<WordTranslation> {
         val connection = dataSource.connection
         return connection.use {
             val statement = connection.prepareStatement(config.getTranslationsByRequestIdQuery)
