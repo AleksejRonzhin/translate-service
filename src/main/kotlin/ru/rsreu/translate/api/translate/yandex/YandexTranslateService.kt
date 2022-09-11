@@ -7,20 +7,23 @@ import ru.rsreu.translate.api.translate.service.TranslateService
 import ru.rsreu.translate.api.translate.yandex.configuration.YandexTranslateServiceConfiguration
 import ru.rsreu.translate.api.translate.yandex.dto.YandexTranslateRequest
 import ru.rsreu.translate.api.translate.yandex.dto.YandexTranslateResponse
-import ru.rsreu.translate.api.translate.yandex.exception.YandexServiceException
+import ru.rsreu.translate.api.translate.yandex.rest.YandexTranslateServiceHeaders
+import ru.rsreu.translate.api.translate.yandex.rest.YandexTranslateServiceRestClient
 
 @Service
 class YandexTranslateService(
-    private val config: YandexTranslateServiceConfiguration
+    private val config: YandexTranslateServiceConfiguration,
+    private val restClient: YandexTranslateServiceRestClient,
+    private val headers: YandexTranslateServiceHeaders
 ) : TranslateService {
-    override val key: String = "yandex"
+    override val key: String = config.serviceKey
 
-    override fun translate(source: String?, target: String, texts: List<String>): String {
+    override fun translate(source: String?, target: String, texts: Collection<String>): Collection<String> {
         val request = YandexTranslateRequest(source, target, texts)
-        val entity = HttpEntity<YandexTranslateRequest>(request, config.headers())
-        val response = config.restTemplate().postForEntity<YandexTranslateResponse>(
+        val entity = HttpEntity<YandexTranslateRequest>(request, headers)
+        val response = restClient.postForEntity<YandexTranslateResponse>(
             config.url + config.translateUrlPart, entity
         )
-        return response.body?.translations?.first()?.text ?: throw YandexServiceException()
+        return response.body?.translations?.map { it.text } ?: texts
     }
 }

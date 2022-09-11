@@ -1,4 +1,4 @@
-package ru.rsreu.translate.api.translate.service
+package ru.rsreu.translate.api.translate.service.utils
 
 class TextPartSequence(private val sequence: List<TextPart>) {
     companion object {
@@ -8,7 +8,7 @@ class TextPartSequence(private val sequence: List<TextPart>) {
             var nextWord = separators.contains(text[partStartIndex]).not()
             while (partStartIndex < text.length) {
                 val predicate: (Char) -> Boolean =
-                    { if (nextWord) separators.contains(it) else !separators.contains(it) }
+                    { if (nextWord) !separators.contains(it) else separators.contains(it) }
                 val (extractedTextPart, nextPartStartIndex) = text.takeWhile(partStartIndex, predicate)
                 list.add(TextPart(extractedTextPart, nextWord))
                 partStartIndex = nextPartStartIndex
@@ -31,13 +31,7 @@ data class TextPart(
     val text: String, val isWord: Boolean
 )
 
-private fun String.takeWhile(startIndex: Int, predicate: (Char) -> Boolean): Pair<String, Int> {
-    var i = startIndex
-    while (i < this.length) {
-        if (predicate(this[i])) {
-            break
-        }
-        i++
+private fun String.takeWhile(startIndex: Int, predicate: (Char) -> Boolean): Pair<String, Int> =
+    substring(startIndex).takeWhile(predicate).let {
+        Pair(it, startIndex + it.length)
     }
-    return Pair(this.substring(startIndex, i), i)
-}

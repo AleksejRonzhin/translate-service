@@ -1,7 +1,7 @@
 package ru.rsreu.translate.api.translate.yandex.dto
 
 data class YandexTranslateResponse(
-    val translations: List<Translation>
+    val translations: Collection<Translation>
 )
 
 data class Translation(val text: String)

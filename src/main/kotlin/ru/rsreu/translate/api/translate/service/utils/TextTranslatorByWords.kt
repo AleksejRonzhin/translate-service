@@ -1,4 +1,4 @@
-package ru.rsreu.translate.api.translate.service
+package ru.rsreu.translate.api.translate.service.utils
 
 import ru.rsreu.translate.api.translate.model.WordTranslation
 import java.util.stream.Collectors.toSet

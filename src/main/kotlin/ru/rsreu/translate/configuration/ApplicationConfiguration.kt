@@ -8,5 +8,4 @@ import org.springframework.context.annotation.Configuration
 class ApplicationConfiguration {
     @Bean
     fun logger() = KotlinLogging.logger {}
-
 }
