@@ -1,3 +1,7 @@
+application:
+    translation:
+      word_separators: " .,!?:;\n\t"
+
 yandex_translation_service:
   url: "https://translate.api.cloud.yandex.net/translate/v2"
   api_key: "AQVNxX9MGQ2ocw-S65HitpkoXUqrYejglBYvZ_LB"
@@ -16,6 +20,7 @@ database:
         input: "input_text"
         output: "output_text"
         ip: "ip"
+        service_key: "translation_service_key"
     word_translations:
       columns:
         id: "id"
@@ -27,5 +32,6 @@ database:
   queries:
     get_all: "SELECT * FROM translate_requests"
     get_translations: "SELECT * FROM word_translations WHERE request_id = ?"
-    create: "INSERT INTO translate_requests(request_date, source_language_code, target_language_code, input_text, output_text, ip) values (?, ?, ?, ?, ?, ?)"
+    create: "INSERT INTO translate_requests(request_date, source_language_code, target_language_code, input_text, output_text, ip, translation_service_key) values (?, ?, ?, ?, ?, ?, ?)"
     create_translation: "INSERT INTO word_translations(request_id, word, translated_word) values (?, ?, ?)"
+    get_perfect_translation: "SELECT word_translations.* FROM translate_requests JOIN word_translations ON translate_requests.id = word_translations.request_id WHERE word = ? and source_language_code = ? and target_language_code = ? and translation_service_key = ?"

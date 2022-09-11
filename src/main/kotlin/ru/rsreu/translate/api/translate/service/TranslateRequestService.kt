@@ -36,10 +36,14 @@ class TranslateRequestService(
             targetLanguageCode = targetLanguageCode,
             inputText = text,
             outputText = translatedText,
-            translations = translations
+            translations = translations,
+            translateServiceKey = translateService.key
         ).also { repo.create(it) }
     }
 
     private fun translateWord(source: String?, target: String, word: String) =
-        translateService.translate(source, target, listOf(word))
+        repo.getPerfectTranslationOrNull(source, target, word, translateService.key) ?: run {
+            logger.info { "Go to Yandex for word '$word'" }
+            translateService.translate(source, target, listOf(word))
+        }
 }

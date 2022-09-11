@@ -57,6 +57,7 @@ class TranslateRequestRepository(
         setString(4, it.inputText)
         setString(5, it.outputText)
         setString(6, it.ip)
+        setString(7, it.translateServiceKey)
     }
 
     fun getAll(): Collection<TranslateRequest> {
@@ -83,7 +84,8 @@ class TranslateRequestRepository(
             inputText = getString(columns.input),
             outputText = getString(columns.output),
             ip = getString(columns.ip),
-            translations = getTranslations(id)
+            translations = getTranslations(id),
+            translateServiceKey = getString(columns.serviceKey)
         )
     }
 
@@ -106,5 +108,26 @@ class TranslateRequestRepository(
         return WordTranslation(
             id = getLong(columns.id), word = getString(columns.word), translatedWord = getString(columns.translatedWord)
         )
+    }
+
+    fun getPerfectTranslationOrNull(source: String?, target: String, word: String, key: String): String? {
+        val connection = dataSource.connection
+        return connection.use {
+            val statement = connection.prepareStatement(config.getPerfectTranslation)
+            statement.use {
+                statement.setPerfectTranslation(source, target, word, key)
+                val resultSet = statement.executeQuery()
+                resultSet.use {
+                    if (resultSet.next()) convertResultSetToTranslation(resultSet).translatedWord else null
+                }
+            }
+        }
+    }
+
+    private fun PreparedStatement.setPerfectTranslation(source: String?, target: String, word: String, key: String) {
+        setString(1, word)
+        setString(2, source)
+        setString(3, target)
+        setString(4, key)
     }
 }

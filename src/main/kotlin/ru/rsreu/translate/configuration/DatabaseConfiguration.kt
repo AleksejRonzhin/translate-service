@@ -10,6 +10,8 @@ data class DatabaseConfiguration(
     @Value("\${database.queries.get_translations}") val getTranslationsByRequestIdQuery: String,
     @Value("\${database.queries.create}") val createRequestQuery: String,
     @Value("\${database.queries.create_translation}") val createTranslationQuery: String,
+    @Value("\${database.queries.get_perfect_translation}") val getPerfectTranslation: String,
+
     val translateRequestTableColumns: TranslateRequestTableColumns,
     val wordTranslationsTableColumns: WordTranslationTableColumns
 )
@@ -22,8 +24,9 @@ data class TranslateRequestTableColumns(
     @Value("\${database.tables.translate_requests.columns.target}") val target: String,
     @Value("\${database.tables.translate_requests.columns.input}") val input: String,
     @Value("\${database.tables.translate_requests.columns.output}") val output: String,
-    @Value("\${database.tables.translate_requests.columns.ip}") val ip: String
-)
+    @Value("\${database.tables.translate_requests.columns.ip}") val ip: String,
+    @Value("\${database.tables.translate_requests.columns.service_key}") val serviceKey: String
+    )
 
 @Component
 data class WordTranslationTableColumns(

@@ -9,6 +9,7 @@ data class TranslateRequest(
     val sourceLanguageCode: String?,
     val targetLanguageCode: String,
     val inputText: String,
+    val translateServiceKey: String,
     var outputText: String,
     var translations: Collection<WordTranslation>
 )

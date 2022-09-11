@@ -13,6 +13,8 @@ import ru.rsreu.translate.api.translate.yandex.exception.YandexServiceException
 class YandexTranslateService(
     private val config: YandexTranslateServiceConfiguration
 ) : TranslateService {
+    override val key: String = "yandex"
+
     override fun translate(source: String?, target: String, texts: List<String>): String {
         val request = YandexTranslateRequest(source, target, texts)
         val entity = HttpEntity<YandexTranslateRequest>(request, config.headers())
