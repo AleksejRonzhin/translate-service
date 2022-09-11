@@ -18,10 +18,19 @@ class TranslateRequestService(
     fun create(
         sourceLanguageCode: String?, targetLanguageCode: String, text: String, date: Timestamp, ip: String
     ): TranslateRequest {
-        val wordTranslator = { word: String ->
-            translateWord(sourceLanguageCode, targetLanguageCode, word)
+        val wordTranslator = { words: List<String> ->
+            translateWords(sourceLanguageCode, targetLanguageCode, words).toList()
         }
-        val (translatedText, translations) = TextTranslatorByWords(wordTranslator, separators).translate(text)
+
+        val perfectTranslationChecker = { word: String ->
+            repo.getPerfectTranslationOrNull(sourceLanguageCode, targetLanguageCode, word, translateService.key)
+        }
+
+        val (translatedText, translations) = TextTranslatorByWords(
+            wordTranslator, perfectTranslationChecker, separators
+        ).translate(text)
+
+
         return TranslateRequest(
             date = date,
             ip = ip,
@@ -34,10 +43,7 @@ class TranslateRequestService(
         ).also { repo.create(it) }
     }
 
-    private fun translateWord(source: String?, target: String, word: String) =
-        repo.getPerfectTranslationOrNull(source, target, word, translateService.key) ?: translateService.translate(
-            source,
-            target,
-            listOf(word)
-        ).first()
+    private fun translateWords(source: String?, target: String, words: Collection<String>) = translateService.translate(
+        source, target, words
+    )
 }

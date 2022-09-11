@@ -2,7 +2,11 @@ package ru.rsreu.translate.api.translate.service.utils
 
 class TextPartSequence(private val sequence: List<TextPart>) {
     companion object {
+        private val EMPTY_SEQUENCE = TextPartSequence(listOf())
+
         fun createByText(text: String, separators: Separators<Char>): TextPartSequence {
+            if (text.isEmpty()) return EMPTY_SEQUENCE
+
             val list = mutableListOf<TextPart>()
             var partStartIndex = 0
             var nextWord = separators.contains(text[partStartIndex]).not()
@@ -19,16 +23,22 @@ class TextPartSequence(private val sequence: List<TextPart>) {
     }
 
     fun replaceWords(replacer: (String) -> String) = TextPartSequence(sequence.map {
-        TextPart(if (it.isWord) replacer(it.text) else it.text, it.isWord)
+        TextPart(if (it.isNeedReplace) replacer(it.text) else it.text, it.isNeedReplace)
     })
 
     override fun toString() = buildString { sequence.map { it.text }.forEach(::append) }
 
-    fun getWords(): List<String> = sequence.filter { it.isWord }.map { it.text }
+    fun getWords(): List<String> = sequence.filter { it.isNeedReplace }.map { it.text }
+    fun replaceWordsWithCacheChecker(cacheChecker: (String) -> String?) = TextPartSequence(sequence.map { oldTextPart ->
+        if (oldTextPart.isNeedReplace) cacheChecker(oldTextPart.text)?.let { cacheValue ->
+            TextPart(cacheValue, false)
+        } ?: oldTextPart
+        else oldTextPart
+    })
 }
 
 data class TextPart(
-    val text: String, val isWord: Boolean
+    val text: String, val isNeedReplace: Boolean
 )
 
 private fun String.takeWhile(startIndex: Int, predicate: (Char) -> Boolean): Pair<String, Int> =
