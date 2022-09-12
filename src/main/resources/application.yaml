@@ -5,7 +5,7 @@ application:
 yandex_translation_service:
   service_key: "Yandex Translate v2"
   url: "https://translate.api.cloud.yandex.net/translate/v2"
-  api_key: "AQVNxX9MGQ2ocw-S65HitpkoXUqrYejglBYvZ_LB"
+  api_key: "AQVN0hYdIIsbFgbzM03xAyJy3ga2aKDpKXcZ9tzq"
   api:
     translate: "/translate"
     translate_error: "error"
